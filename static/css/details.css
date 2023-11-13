@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    width: 100%;
+    background: #c8e8e9;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Raleway', sans-serif;
+    background-image: linear-gradient(to bottom right, #3C3E5B 60%, #D49523 50%, #e57b25 100%);
+}
+
+.header {
+    overflow: hidden;
+    background-color: #1d1e30;
+    font-size: 16px;
+    color: #dc684b;
+    font-size: x-large;
+    padding: 13px 0;
+    padding-left: 20px;
+}
+
+.header span a{
+    color: #D49523;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.container {
+    margin-top: 90px;
+    width: 85%;
+    background: #fff;
+    border-radius: 0px 41px 0 41px;
+    padding: 20px 60px 30px 40px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+  
+.container .content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.container .content .left-side {
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    position: relative;
+}
+
+.content .left-side .carousel-container .carousel img {
+    width: 100%;
+    height: auto;
+    padding: 0 30px;
+}
+
+#prevButton, #nextButton {
+    cursor: pointer;
+    position: absolute;
+    top: 48%;
+    width: auto;
+    margin-top: -23px;
+    padding: 14px;
+    color: grey;
+    font-weight: bold;
+    font-size: 24px;
+    transition: 0.4s ease;
+    border-radius: 0 5px 5px 0;
+    user-select: none;
+    background-color: #3c3e5b29;
+}
+
+#nextButton {
+    right: 0;
+    border-radius: 4px 0 0 4px;
+  }
+  
+.container .content .right-side {
+    width: 60%;
+    margin-left: 10px;
+    margin-right: 25px;
+}
+  
+.content .right-side .obstruction {
+    font-size: 23px;
+    font-weight: 700;
+    color: #3C3E5B;
+}
+  
+.content .right-side .createdby span, .createdat span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #dc684b;
+}
+
+.right-side .buttons .ended {
+    float: right;
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 7px;
+    background-color: #cd5d41;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 13px;
+}
+
+.right-side .buttons .delete {
+    float: right;
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 7px;
+    background-color: #b22222;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 13px;
+}
+
+.right-side .buttons .approve {
+    float: right;
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 7px;
+    background-color: #449e48;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+  
+.right-side .buttons .approve:hover {
+    background: #307834;
+}
+
+.right-side .buttons .delete:hover {
+    background: #8e1616;
+}
+
+.right-side .buttons .ended:hover {
+    background: #ab472e;
+}
+
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.carousel img {
+    width: 100%;
+    height: auto;
+}
+  
+
+@media (max-width: 950px) {
+    .container{
+        width: 90%;
+        padding: 30px 40px 40px 35px ;
+    }
+    .container .content .right-side{
+        width: 75%;
+        margin-left: 55px;
+    }
+}
+
+@media (max-width: 820px) {
+    .container{
+        margin: 40px 0;
+        height: 100%;
+    }
+    .container .content{
+        flex-direction: column-reverse;
+    }
+    .container .content .left-side{
+        width: 100%;
+        flex-direction: row;
+        margin-top: 40px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .container .content .left-side::before{
+        display: none;
+    }
+    .container .content .right-side{
+        width: 100%;
+        margin-left: 0;
+    }
+}

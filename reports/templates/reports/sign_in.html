@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/sign_in.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+        <title>RoadEscape | Sign In</title>
+        <link href="{% static 'images/RE_logo_otl.png' %}" rel="icon">
+    </head>
+
+   <body>
+      <div class="header">
+         <nav class="navbar">
+            <h2 class="logo"><a href="#">Road<span>Escape</span></a></h2>
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" id="hamburger-btn">
+             <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+               <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+             </svg>
+            </label>
+            <ul class="links">
+               <li><a href="{% url 'home' %}">Home</a></li>
+               <li><a href="{% url 'about' %}">About Us</a></li>
+               <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            </ul>
+            <div class="button">
+               <a href="{% url 'sign_in' %}" class="signin">Sign In</a>
+            </div>
+         </nav>
+       </div>
+      <div class="wrapper">
+         <div class="title">
+            Sign In
+         </div>
+         <form method="POST">
+            {% csrf_token %}
+            <div class="field">
+               <lord-icon
+                  src="https://cdn.lordicon.com/dqxvvqzi.json"
+                  trigger="loop"
+                  delay="2000"
+                  colors="primary:#3C3E5B,secondary:#CD5232">
+               </lord-icon>
+               <input type="text" name="username" placeholder="Username">
+            </div>
+            <div class="field">
+               <lord-icon
+                  src="https://cdn.lordicon.com/mrjuyheh.json"
+                  trigger="loop"
+                  delay="2000"
+                  colors="outline:#121331,primary:#3C3E5B,secondary:#CD5232,tertiary:#ebe6ef">
+               </lord-icon>
+               <input type="password" name="password" placeholder="Password">
+            </div><br><br>
+            <div class="field">
+               <input type="submit" value="Sign In">
+            </div>
+         </form>
+         <h3>This Sign In page is exclusively for administrators</h3>
+      </div>
+      <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+   </body>
+</html>

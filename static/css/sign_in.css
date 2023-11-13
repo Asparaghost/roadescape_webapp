@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Raleway', sans-serif;
+}
+
+html, body {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  background-image: linear-gradient(to bottom right, #3C3E5B 60%, #D49523 50%, #e57b25 100%);
+}
+
+.header {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  width: 100%;
+  background-color: #3C3E5B;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
+.navbar .logo a {
+  font-size: 1.8rem;
+  text-decoration: none;
+  color: #D49523;
+  font-weight: 700;
+}
+
+.navbar .logo a span {
+  color: #cb654c;
+}
+
+.navbar .links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  gap: 35px;
+}
+
+.navbar .links li {
+  margin-top: 12px;
+}
+
+.navbar .links a {
+  font-weight: 500;
+  text-decoration: none;
+  color: #fff;
+  padding: 10px 0;
+  transition: 0.2s ease;
+}
+
+.navbar .links a:hover {
+  color: #f3a514;
+}
+
+.navbar .button a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 1rem;
+  padding: 15px 0;
+  transition: 0.2s ease;
+}
+
+.navbar .button .signin {
+  padding: 8px 10px;
+  background-color: #CD5232;
+  border-radius: 10px;
+}
+
+.navbar .button .signin:hover {
+  background-color: #D49523;
+}
+
+#menu-toggle {
+  display: none;
+}
+
+#hamburger-btn {
+  font-size: 1.8rem;
+  color: #fff;
+  cursor: pointer;
+  display: none;
+  order: 1;
+}
+
+.wrapper {
+  width: 380px;
+  background: #fff;
+  border-radius: 41px 41px 0 41px;
+  box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+}
+
+.wrapper .title {
+  font-size: 23px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 70px;
+  color: #fff;
+  user-select: none;
+  border-radius: 0px 40px 0 0;
+  background-image: linear-gradient(to right, #CD5232 , #bd6b0c);
+  background-color: #CD5232;
+}
+
+.wrapper form {
+  padding: 10px 30px 50px 30px;
+}
+
+.wrapper form .field {
+  height: 50px;
+  width: 100%;
+  margin-top: 20px;
+  position: relative;
+}
+
+.wrapper form .field input {
+  height: 100%;
+  width: 100%;
+  outline: none;
+  font-size: 17px;
+  padding-left: 60px;
+  padding-right: 5px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.wrapper form .field input:focus,
+form .field input:valid{
+  border: 1px solid #CD5232;
+}
+
+.wrapper form .field label {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  color: #999999;
+  font-weight: 400;
+  font-size: 17px;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+}
+
+form .content {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  font-size: 16px;
+  align-items: center;
+  justify-content: space-around;
+}
+
+form .content label {
+  color: #262626;
+  user-select: none;
+  padding-left: 5px;
+}
+
+form .field input[type="submit"] {
+  color: #fff;
+  border: none;
+  padding-left: 0;
+  margin-top: -10px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #CD5232;
+  transition: all 0.3s ease;
+}
+
+form .field input[type="submit"]:active {
+  transform: scale(0.95);
+}
+
+form .field input[type="submit"]:hover {
+  background-color: #D49523;
+}
+
+@media screen and (max-width: 1023px) {
+  .header{
+    z-index: 2;
+  }
+
+  .navbar .logo a {
+    font-size: 1.5rem;
+  }
+
+  .links {
+    position: fixed;
+    left: -100%;
+    top: 50px;
+    width: 100%;
+    height: 100vh;
+    padding-top: 50px;
+    background: #3c3e5beb;
+    flex-direction: column;
+    transition: 0.3s ease;
+  }
+
+  .navbar #menu-toggle:checked ~ .links {
+    left: 0;
+  }
+
+  .navbar #hamburger-btn {
+    display: block;
+  }
+
+  .header .buttons {
+    display: none;
+  }
+}
+
+lord-icon{
+  z-index: 1;
+  position: absolute;
+  width: 50px;
+  height: 50px
+}
+
+.wrapper h3 {
+  text-align: center;
+  font-size: 13px;
+  margin-top: -25px;
+  margin-bottom: 15px;
+  color: #3C3E5B;
+}

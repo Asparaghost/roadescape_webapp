@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/details.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link href="{% static 'images/RE_logo_otl.png' %}" rel="icon">
+        <title>Road Escape | Admin</title>
+    </head>
+    <body>
+        <div class="header"><span><a href="{% url 'ongoing' %}">RoadEscape</a></span> Incident Report Details</div>
+        
+        <div class="container">
+            <div class="content">
+  
+              <div class="left-side">
+                <div class="carousel-container">
+                  <div class="carousel">
+                  {% if incident_report.imageUrls.0 %}
+                      <img src="{{ incident_report.imageUrls.0 }}" alt="incident_photo1" />
+                  {% endif %}
+
+                  {% if incident_report.imageUrls.1 %}
+                      <img src="{{ incident_report.imageUrls.1 }}" alt="incident_photo2" />
+                  {% endif %}
+
+                  {% if incident_report.imageUrls.2 %}
+                      <img src="{{ incident_report.imageUrls.2 }}" alt="incident_photo3" />
+                  {% endif %}
+                  </div>
+
+                  {% if incident_report.imageUrls.1 or incident_report.imageUrls.2%}
+                    <i class="fa-solid fa-angle-left" id="prevButton"></i>
+                    <i class="fa-solid fa-angle-right" id="nextButton"></i>
+                  {% endif %}
+                </div>
+              </div>
+  
+                <div class="right-side">
+                  <div class="obstruction">{{ incident_report.obstruction }}</div>
+                  <p>
+                      {{ incident_report.description }}
+                  </p><br>
+                  <div class="createdby"><span>Reported By:</span> {{ incident_report.createdBy }}</div>
+                  <div class="createdat"><span>Reported At:</span> {{ incident_report.createdAt }}</div><br>
+                  
+                  <div class="buttons">
+                    <a href="{% url 'status_ended' id %}" class="ended">Remove Marker</a>
+                  </div>
+                </div>
+                  
+            </div>
+          </div>
+        
+        
+        
+        <!-- <ul>
+            <li><strong>Obstruction:</strong> {{ incident_report.obstruction }}</li>
+            <li><strong>Description:</strong> {{ incident_report.description }}</li>
+            <li><strong>Reported By:</strong> {{ incident_report.createdBy }}</li>
+            <li><strong>Reported At:</strong> {{ incident_report.createdAt }}</li>
+            <img src="{{ incident_report.imageUrl }}" alt="incident_photo" id="incident_photo">
+        </ul>
+        <a href="{% url 'status_ended' id %}" id="remove-link">Finish Na</a> -->
+        <script>
+          const carousel = document.querySelector('.carousel');
+          let currentIndex = 0;
+          const images = carousel.querySelectorAll('img');
+          const numImages = images.length;
+      
+          function showImage(index) {
+            carousel.style.transform = `translateX(-${index * 100}%)`;
+          }
+      
+          function nextImage() {
+            currentIndex = (currentIndex + 1) % numImages;
+            showImage(currentIndex);
+          }
+      
+          function prevImage() {
+            currentIndex = (currentIndex - 1 + numImages) % numImages;
+            showImage(currentIndex);
+          }
+          document.querySelector('#prevButton').addEventListener('click', prevImage);
+          document.querySelector('#nextButton').addEventListener('click', nextImage);
+      
+          showImage(currentIndex);
+        </script>
+      </body>
+</html>
