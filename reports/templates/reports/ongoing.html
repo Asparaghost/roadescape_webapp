@@ -35,6 +35,9 @@
 				<a href="{% url 'details_ongoing' report.id %}" data-report-id="{{ report.id }}">
 					<span>{{ report.obstruction }}</span> | In Progress
 				</a>
+				<a href="{% url 'update_ongoing_incident' report.id %}" id="edit">
+					<i class="fas fa-pen"></i>
+				</a>
 			</div>
 			{% empty %}
 				<h5>No ongoing obstructions</h5>

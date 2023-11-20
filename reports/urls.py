@@ -21,6 +21,8 @@ urlpatterns = [
     path('delete_history/<str:id>/', views.delete_history, name='delete_history'),
 
     path('add_incident/', views.save_to_firebase, name='save_to_firebase'),
+    path('update_ongoing_incidentdata/<str:id>/', views.update_ongoing_incident, name='update_ongoing_incident'),
+    path('update_reported_incidentdata/<str:id>/', views.update_reported_incident, name='update_reported_incident'),
 
     path('sign_in/',authentication_views.LoginView.as_view(template_name='reports/sign_in.html'), name='sign_in'),
     path('logout/',authentication_views.LogoutView.as_view(template_name='reports/sign_out.html'), name='logout'),

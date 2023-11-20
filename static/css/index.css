@@ -114,6 +114,13 @@ body {
     color: #e09916;
 }
 
+.list-content #edit {
+    color: #e09916;
+    position: absolute;
+    right: 16px;
+}
+
+
 .list-content a:hover {
     color: #f3a514;
 }

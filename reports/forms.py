@@ -21,3 +21,8 @@ class ContactForm(forms.Form):
     email = forms.EmailField()
     content = forms.CharField(widget=forms.Textarea)
         
+
+class EditIncidentReportForm(forms.ModelForm):
+    class Meta:
+        model = IncidentReport 
+        fields = ['obstruction', 'description', 'latitude', 'longitude']

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from decouple import config
 from .models import IncidentReport
-from .forms import IncidentReportForm, ContactForm
+from .forms import IncidentReportForm, ContactForm, EditIncidentReportForm
 from django.utils import timezone
 from django.http import JsonResponse
 from google.cloud import firestore
@@ -241,7 +241,7 @@ def delete_history(request, id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': 'Failed to delete incident report'})
 
-
+@login_required
 def save_to_firebase(request):
     if request.method == 'POST':
         form = IncidentReportForm(request.POST, request.FILES)
@@ -281,3 +281,68 @@ def save_to_firebase(request):
     else:
         form = IncidentReportForm()
     return render(request, 'reports/incident_form.html', {'form': form, "api_key": config('GOOGLE_MAPS_API_KEY')})
+
+
+@login_required
+def update_ongoing_incident(request, id):
+    try:
+        incident_ref = db.collection("IncidentReport").document(id)
+        incident_report = incident_ref.get()
+
+        if not incident_report.exists:
+            return JsonResponse({'status': 'error', 'message': 'Failed to update incident report because it does not exist'})
+
+        form = EditIncidentReportForm(request.POST or None, instance=IncidentReport(**incident_report.to_dict()))
+
+        if request.method == 'POST' and form.is_valid():
+            data = form.cleaned_data
+            incident_ref.update({
+                'obstruction': data['obstruction'], 
+                'description': data['description'],
+                'latitude': data['latitude'], 
+                'longitude': data['longitude'] 
+                })
+            return redirect('ongoing')
+
+        context = {
+            'form': form,
+            'id': id,
+            "api_key": config('GOOGLE_MAPS_API_KEY')
+        }
+        return render(request, 'reports/update_ongoing.html', context)
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': 'Failed to update incident report'})
+
+
+
+@login_required
+def update_reported_incident(request, id):
+    try:
+        incident_ref = db.collection("IncidentReport").document(id)
+        incident_report = incident_ref.get()
+
+        if not incident_report.exists:
+            return JsonResponse({'status': 'error', 'message': 'Failed to update incident report because it does not exist'})
+
+        form = EditIncidentReportForm(request.POST or None, instance=IncidentReport(**incident_report.to_dict()))
+
+        if request.method == 'POST' and form.is_valid():
+            data = form.cleaned_data
+            incident_ref.update({
+                'obstruction': data['obstruction'], 
+                'description': data['description'],
+                'latitude': data['latitude'], 
+                'longitude': data['longitude'] 
+                })
+            return redirect('requests')
+
+        context = {
+            'form': form,
+            'id': id,
+            "api_key": config('GOOGLE_MAPS_API_KEY')
+        }
+        return render(request, 'reports/update_reported.html', context)
+
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': 'Failed to update incident report'})
