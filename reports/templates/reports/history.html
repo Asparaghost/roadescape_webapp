@@ -27,9 +27,9 @@
         <div class="card-list">
             {% for report in incident_reports %}
             <div class="card-item">
-                {% for imageUrl in report.imageUrls %}
-            <img src="{{ imageUrl }}" alt="incident_photo">
-        {% endfor %}
+                {% if report.imageUrls %}
+                <img src="{{ report.imageUrls.0 }}" alt="incident_photo">
+                 {% endif %}
                 <span class="obstruction">{{ report.obstruction }}</span>
                 <h5>{{ report.description}}</h5>
                 <h5>Reported By: {{ report.createdBy }}</h5>
