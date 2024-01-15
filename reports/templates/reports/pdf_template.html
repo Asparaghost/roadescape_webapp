@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Incident Reports PDF</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            .images {
+                text-align: center;
+            }
+            .images .img-url {
+                display: inline-block;
+                margin: 0 auto;
+                width: 230px;
+                height: 145px;
+            }
+            h1 {
+                font-size: 16px;
+            }
+            .content {
+                font-size: 14px;
+            }
+            span {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        {% for incident in selected_incidents %}
+        <img src="static/images/RE_header.png" alt="header" style="width: 240px; height: 70px;">
+        <br/><br/><br/>
+        <h1>Incident Information</h1><br/>
+            <div class="content">
+                <span>{{ incident.obstruction }}</span><br/>
+                Status: {{ incident.status }}<br/>
+                Description: {{ incident.description }}<br/><br/>
+                Reported By: {{ incident.createdBy }}<br/>
+                Reported At: {{ incident.createdAt }}<br/>
+            </div><br/><br/>
+            <div class="images">
+                {% if incident.imageUrls.0 %}
+                <img class="img-url" src="{{ incident.imageUrls.0 }}" alt="img_1">&nbsp; &nbsp;
+                {% endif %}
+                {% if incident.imageUrls.1 %}
+                <img class="img-url" src="{{ incident.imageUrls.1 }}" alt="img_2">&nbsp; &nbsp;
+                {% endif %}
+                {% if incident.imageUrls.2 %}
+                <img class="img-url" src="{{ incident.imageUrls.2 }}" alt="img_3">
+                {% endif %}
+                <br/><br/><br/><br/>
+                {% if incident.latitude and incident.longitude %}
+                    <img id="map" src="https://maps.googleapis.com/maps/api/staticmap?center={{ incident.latitude }},{{ incident.longitude }}&zoom=15&size=500x400&markers={{ incident.latitude }},{{ incident.longitude }}&key={{ api_key }}" alt="Google Map">
+                {% endif %}<br>
+            </div>
+            <br/>
+            <pdf:nextpage/>
+        {% endfor %}
+    </body>
+</html>

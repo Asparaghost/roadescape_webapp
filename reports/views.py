@@ -4,18 +4,19 @@ from decouple import config
 from .models import IncidentReport
 from .forms import IncidentReportForm, ContactForm, EditIncidentReportForm
 from django.utils import timezone
-from django.http import JsonResponse
 from google.cloud import firestore
-from firebase_admin import storage, credentials, auth
+from firebase_admin import storage, credentials, auth, initialize_app, get_app
 from firebase_admin import db as admin_db 
 import firebase_admin
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string, get_template
 import datetime
 import io
 import json
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
+from xhtml2pdf import pisa
+
 
 db = firestore.Client()
 cred = credentials.Certificate('credentials.json')
@@ -346,3 +347,107 @@ def update_reported_incident(request, id):
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': 'Failed to update incident report'})
+    
+    
+@login_required
+def analytics(request):
+    try:
+        firebase_users = auth.list_users()
+        users_count = len(firebase_users.users)
+
+        incident_reports = get_all_incident_reports()
+        incident_data = get_incident_data()
+
+        reported_incidents_count = count_incidents_by_status("reported")
+        ongoing_incidents_count = count_incidents_by_status("ongoing")
+        ended_incidents_count = count_incidents_by_status("ended")
+        context = {
+            'users_count': users_count,
+            'reported_incidents_count': reported_incidents_count,
+            'ongoing_incidents_count': ongoing_incidents_count,
+            'ended_incidents_count': ended_incidents_count,
+            'incident_reports': incident_reports,
+            'incident_data': json.dumps(incident_data),
+        }
+
+        return render(request, "reports/analytics.html", context)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
+
+def count_incidents_by_status(status):
+    firestore_client = firestore.Client()
+    incidents_ref = firestore_client.collection('IncidentReport')
+    query = incidents_ref.where('status', '==', status)
+    incidents = query.stream()
+    count = len(list(incidents))
+    return count
+
+
+def get_incident_data():
+    firestore_client = firestore.Client()
+
+    incidents_ref = firestore_client.collection('IncidentReport')
+    incident_reports = incidents_ref.stream()
+    incident_data = {}
+
+    for incident_report in incident_reports:
+        data = incident_report.to_dict()
+        obstruction = data.get('obstruction', '')
+        status = data.get('status', '')
+
+        if status in ('ongoing', 'ended'):
+            if obstruction not in incident_data:
+                incident_data[obstruction] = 1
+            else:
+                incident_data[obstruction] += 1
+    return incident_data
+
+
+@login_required
+def generate_pdf(request):
+    incident_reports = get_all_incident_reports()
+    selected_incident_ids = request.GET.getlist('selected_incidents')
+    selected_incidents = [incident for incident in incident_reports if incident['id'] in selected_incident_ids]
+
+    context = {
+        'selected_incidents': selected_incidents,
+        'api_key': config('GOOGLE_MAPS_API_KEY'),
+    }
+
+    template = get_template('reports/pdf_template.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="incident_reports.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+    return response
+
+
+def get_all_incident_reports():
+    firestore_client = firestore.Client()
+    incidents_ref = firestore_client.collection('IncidentReport')
+
+    incident_reports = incidents_ref.stream()
+    incident_reports_data = []
+
+    for incident_report in incident_reports:
+        data = incident_report.to_dict()
+        incident_reports_data.append({
+            'id': incident_report.id,
+            'obstruction': data.get('obstruction', ''),
+            'status': data.get('status', ''),
+            'description': data.get('description', ''),
+            'createdBy': data.get('createdBy', ''),
+            'createdAt': data.get('createdAt', ''),
+            'imageUrls': data.get('imageUrls', ''),
+            'latitude': data.get('latitude', ''),
+            'longitude': data.get('longitude', ''),
+        })
+
+    return incident_reports_data

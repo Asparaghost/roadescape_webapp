@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<head>
+		<title>RoadEscape | Admin</title>
+		<meta charset="UTF-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="{% static 'css/analytics.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+		<link href="{% static 'images/RE_logo_otl.png' %}" rel="icon">
+	</head>
+    <body>
+        <div class="navbar">
+            <img src="{% static 'images/RE_logo_white.png' %}" alt="logo" id="logo" onclick="toggleVerticalScrollable()">
+            <h3><span>RoadEscape</span> Incident Reports</h3>
+            <ul>
+              <li><a href="{% url 'ongoing' %}">Ongoing</a></li>
+              <li><a href="{% url 'requests' %}">Reported</a></li>
+              <li><a href="{% url 'history' %}">Ended</a></li>
+              <li class="active"><a href="{% url 'analytics' %}">Analytics</a></li>
+              <li><a href="https://console.firebase.google.com/u/5/project/roadescape2023/authentication/users">Manage Users</a></li>
+              <li><a href="{% url 'logout' %}" id="logout">Logout</a></li>
+            </ul>
+        </div>
+
+        <div class="grid-container">
+            <!-- Main -->
+            <main class="main-container">
+                <div class="main-title">
+                    <p class="font-weight-bold">DATA ANALYTICS</p>
+                </div>
+
+                <div class="main-cards">
+
+                <div class="card">
+                    <div class="card-inner">
+                    <p class="text-primary">Users</p>
+                    <span class="icon"><i class="fas fa-users"></i></span>
+                    </div>
+                    <span class="text-primary font-weight-bold">{{users_count}}</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-inner">
+                    <p class="text-primary">Reported Incidents</p>
+                    <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                    </div>
+                    <span class="text-primary font-weight-bold">{{reported_incidents_count}}</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-inner">
+                    <p class="text-primary">Ongoing Incidents</p>
+                    <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                    </div>
+                    <span class="text-primary font-weight-bold">{{ongoing_incidents_count}}</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-inner">
+                    <p class="text-primary">Ended Incidents</p>
+                    <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+                    </div>
+                    <span class="text-primary font-weight-bold">{{ended_incidents_count}}</span>
+                </div>
+
+                </div>
+
+                <div class="charts">
+                    <div class="charts-card">
+                        <p class="chart-title">Incident Types</p>
+                        <canvas id="DoughnutChart"></canvas>
+                    </div>
+                    <div class="charts-card">
+                        <p class="chart-title">Monthly Reports</p>
+                        <canvas id="BarChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="main-title">
+                    <p class="font-weight-bold">GENERATE INCIDENT REPORT</p>
+                </div>
+
+                <div class="list-card">
+                    <p class="list-title">List of Incidents</p>
+                    <a href="#" id="pdf-button" onclick="generatePDF()">Generate PDF</a>
+                    <form method="get" action="">
+                        <label for="status">Filter by Status:</label>
+                        <select name="status" id="status">
+                          <option value="">All</option>
+                          <option value="ongoing" {% if request.GET.status == "ongoing" %}selected{% endif %}>Ongoing</option>
+                          <option value="ended" {% if request.GET.status == "ended" %}selected{% endif %}>Ended</option>
+                          <option value="reported" {% if request.GET.status == "reported" %}selected{% endif %}>Reported</option>
+                        </select>
+                        <button type="submit">Apply</button>
+                    </form>
+                    <form id="generate-pdf-form" method="get" action="{% url 'generate_pdf' %}" target="_blank">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Incident</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Reported By</th>
+                                <th scope="col">Reported At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for incident in incident_reports %}
+                                {% if not request.GET.status or incident.status == request.GET.status %}
+                                <tr>
+                                    <th scope="row"><input type="checkbox" name="selected_incidents" value="{{ incident.id }}"></th>
+                                    <td>{{ incident.obstruction }}</td>
+                                    <td>{{ incident.status }}</td>
+                                    <td>{{ incident.createdBy }}</td>
+                                    <td>{{ incident.createdAt }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            var incidentData = JSON.parse('{{ incident_data|escapejs }}');
+
+            function createChart(ctx, type, data, options) {
+                return new Chart(ctx, {
+                    type: type,
+                    data: data,
+                    options: options
+                });
+            }
+
+            var doughnutData = {
+                datasets: [{
+                    data: Object.values(incidentData),
+                    backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple']
+                }],
+                labels: Object.keys(incidentData),
+            };
+
+            var barData = {
+                labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
+                datasets: [{
+                    label: 'Bar Chart Example',
+                    data: [2, 3, 1, 4, 5],
+                    backgroundColor: ['orange', 'purple', 'green', 'blue', 'red']
+                }]
+            };
+
+            var doughnutOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'right',
+                },
+            };
+
+            var commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false
+            };
+
+            var doughnutCtx = document.getElementById('DoughnutChart').getContext('2d');
+            var barCtx = document.getElementById('BarChart').getContext('2d');
+
+            createChart(doughnutCtx, 'doughnut', doughnutData, doughnutOptions);
+            createChart(barCtx, 'bar', barData, commonOptions);
+        </script>
+        <script>
+            function generatePDF() {
+                document.getElementById("generate-pdf-form").submit();
+            }
+        </script>
+
+    </body>
+</html>
