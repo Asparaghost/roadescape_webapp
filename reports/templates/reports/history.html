@@ -16,11 +16,12 @@
             <img src="{% static 'images/RE_logo_white.png' %}" alt="logo" id="logo">
             <h3><span>RoadEscape</span> Incident Reports</h3>
             <ul>
-              <li><a href="{% url 'ongoing' %}">Ongoing</a></li>
-              <li><a href="{% url 'requests' %}">Reported</a></li>
-              <li class="active"><a href="{% url 'history' %}">History</a></li>
-              <li><a href="https://console.firebase.google.com/u/5/project/roadescape2023/authentication/users">Manage Users</a></li>
-              <li><a href="{% url 'logout' %}" id="logout">Logout</a></li>
+                <li><a href="{% url 'ongoing' %}">Ongoing</a></li>
+                <li><a href="{% url 'requests' %}">Reported</a></li>
+                <li class="active"><a href="{% url 'history' %}">Ended</a></li>
+                <li><a href="{% url 'analytics' %}">Analytics</a></li>
+                <li><a href="https://console.firebase.google.com/u/5/project/roadescape2023/authentication/users">Manage Users</a></li>
+                <li><a href="{% url 'logout' %}" id="logout">Logout</a></li>
           </ul>
         </div>
 
@@ -34,7 +35,7 @@
                 <h5>{{ report.description}}</h5>
                 <h5>Reported By: {{ report.createdBy }}</h5>
                 <h5>Reported At: {{ report.createdAt }}</h5>
-                <a href="{% url 'delete_history' report.id %}" id="delete" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa-regular fa-trash-can fa-fade"></i></a>
+                <!-- <a href="{% url 'delete_history' report.id %}" id="delete" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa-regular fa-trash-can fa-fade"></i></a> -->
                 
             </div>
             {% empty %}

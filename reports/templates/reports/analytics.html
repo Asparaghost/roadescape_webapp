@@ -12,7 +12,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 		<link href="{% static 'images/RE_logo_otl.png' %}" rel="icon">
 	</head>
-    <body>
+    <body style="background: radial-gradient(#515379,#191a29);">
         <div class="navbar">
             <img src="{% static 'images/RE_logo_white.png' %}" alt="logo" id="logo" onclick="toggleVerticalScrollable()">
             <h3><span>RoadEscape</span> Incident Reports</h3>
@@ -27,7 +27,6 @@
         </div>
 
         <div class="grid-container">
-            <!-- Main -->
             <main class="main-container">
                 <div class="main-title">
                     <p class="font-weight-bold">DATA ANALYTICS</p>
@@ -90,10 +89,10 @@
                     <form method="get" action="">
                         <label for="status">Filter by Status:</label>
                         <select name="status" id="status">
-                          <option value="">All</option>
-                          <option value="ongoing" {% if request.GET.status == "ongoing" %}selected{% endif %}>Ongoing</option>
-                          <option value="ended" {% if request.GET.status == "ended" %}selected{% endif %}>Ended</option>
-                          <option value="reported" {% if request.GET.status == "reported" %}selected{% endif %}>Reported</option>
+                            <option value="">All</option>
+                            <option value="ongoing" {% if request.GET.status == "ongoing" %}selected{% endif %}>Ongoing</option>
+                            <option value="ended" {% if request.GET.status == "ended" %}selected{% endif %}>Ended</option>
+                            <option value="reported" {% if request.GET.status == "reported" %}selected{% endif %}>Reported</option>
                         </select>
                         <label for="month">Month:</label>
                         <select name="month" id="month">
@@ -147,6 +146,8 @@
 
         <script>
             var incidentData = JSON.parse('{{ incident_data|escapejs }}');
+            var months = JSON.parse('{{ months|escapejs }}');
+            var monthlyCounts = JSON.parse('{{ monthly_counts|escapejs }}');
 
             function createChart(ctx, type, data, options) {
                 return new Chart(ctx, {
@@ -165,11 +166,11 @@
             };
 
             var barData = {
-                labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4', 'Category 5'],
+                labels: months,
                 datasets: [{
-                    label: 'Bar Chart Example',
-                    data: [2, 3, 1, 4, 5],
-                    backgroundColor: ['orange', 'purple', 'green', 'blue', 'red']
+                    label: 'Monthly Incident Reports',
+                    data: monthlyCounts,
+                    backgroundColor: 'rgba(60, 62, 91, 0.75)',
                 }]
             };
 
@@ -182,16 +183,29 @@
                 },
             };
 
-            var commonOptions = {
+            var barOptions = {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             };
 
             var doughnutCtx = document.getElementById('DoughnutChart').getContext('2d');
             var barCtx = document.getElementById('BarChart').getContext('2d');
 
             createChart(doughnutCtx, 'doughnut', doughnutData, doughnutOptions);
-            createChart(barCtx, 'bar', barData, commonOptions);
+            createChart(barCtx, 'bar', barData, barOptions);
+
+            function createChart(ctx, type, data, options) {
+            return new Chart(ctx, {
+                type: type,
+                data: data,
+                options: options
+            });
+            }
         </script>
         <script>
             function generatePDF() {

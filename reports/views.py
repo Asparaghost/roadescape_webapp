@@ -15,6 +15,7 @@ import io
 import json
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
+from django.db.models.functions import ExtractMonth
 from xhtml2pdf import pisa
 
 
@@ -361,6 +362,10 @@ def analytics(request):
         reported_incidents_count = count_incidents_by_status("reported")
         ongoing_incidents_count = count_incidents_by_status("ongoing")
         ended_incidents_count = count_incidents_by_status("ended")
+        incident_monthly = get_incident_monthly()
+
+        months = [str(month) for month in range(1, 13)]
+        monthly_counts = [incident_monthly.get(month, 0) for month in months]
         context = {
             'users_count': users_count,
             'reported_incidents_count': reported_incidents_count,
@@ -368,6 +373,9 @@ def analytics(request):
             'ended_incidents_count': ended_incidents_count,
             'incident_reports': incident_reports,
             'incident_data': json.dumps(incident_data),
+            'incident_monthly': json.dumps(incident_monthly),
+            'months': json.dumps(months),  
+            'monthly_counts': json.dumps(monthly_counts),
         }
 
         return render(request, "reports/analytics.html", context)
@@ -402,6 +410,31 @@ def get_incident_data():
             else:
                 incident_data[obstruction] += 1
     return incident_data
+
+
+def get_incident_monthly():
+    firestore_client = firestore.Client()
+
+    incidents_ref = firestore_client.collection('IncidentReport')
+    incident_reports = incidents_ref.stream()
+    incident_monthly = {}
+
+    for incident_report in incident_reports:
+        data = incident_report.to_dict()
+        status = data.get('status', '')
+        created_at = data.get('createdAt', None)
+
+        if created_at:
+            month = created_at.month
+            key = str(month)
+
+            if status in ('reported', 'ongoing', 'ended'):
+                if key not in incident_monthly:
+                    incident_monthly[key] = 1
+                else:
+                    incident_monthly[key] += 1
+
+    return incident_monthly
 
 
 @login_required
