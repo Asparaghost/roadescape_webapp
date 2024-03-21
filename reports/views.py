@@ -484,3 +484,4 @@ def get_all_incident_reports():
         })
 
     return incident_reports_data
+
